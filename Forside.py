@@ -1,5 +1,3 @@
-import calendar
-import locale
 from pathlib import Path
 from typing import Dict, List, Literal, Optional
 
@@ -11,11 +9,24 @@ from plotly.subplots import make_subplots
 
 from data import get_power_usage, get_smartcloud_data, get_userinfo_detailed
 
-locale.setlocale(locale.LC_ALL, "da_DK")
 TOKEN_PATH = Path("token.txt")
 LOCAL_DATA_PATH = Path("data.csv")
-MONTH_NAMES = list(calendar.month_name)
-DAY_NAMES = list(calendar.day_name)
+MONTH_NAMES = [
+    "",
+    "januar",
+    "februar",
+    "marts",
+    "april",
+    "maj",
+    "juni",
+    "juli",
+    "august",
+    "september",
+    "oktober",
+    "november",
+    "december",
+]
+DAY_NAMES = ["mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag", "søndag"]
 USER_INFO_TEMPLATE = """Adresse: {} {}, {} {}\n\nBruger(e): {} {}"""
 
 
