@@ -205,7 +205,7 @@ def main():
     else:
         token = None
 
-    st.set_page_config(page_title="Elforbrug", layout="centered")
+    st.set_page_config(page_title="Elforbrug", layout="centered", page_icon="⚡")
     st.title("⚡ Elforbrug ⚡")
 
     power_df = st.session_state.get("power_df", None)
