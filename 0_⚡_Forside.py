@@ -281,22 +281,23 @@ def main():
         return
 
     with st.sidebar:
-        st.info(
-            USER_INFO_TEMPLATE.format(
-                userinfo["contactAddresses"][0]["streetName"],
-                userinfo["contactAddresses"][0]["buildingNumber"],
-                userinfo["contactAddresses"][0]["postcode"],
-                userinfo["contactAddresses"][0]["cityName"],
-                userinfo["firstConsumerPartyName"],
-                f""" og {userinfo.get("secondConsumerPartyName")}"""
-                if userinfo.get("secondConsumerPartyName") is not None
-                else "",
-            ),
-            icon="ℹ",
-        )
+        # We only get userinfo with a token, so this might be empty
+        if userinfo is not None:
+            st.info(
+                USER_INFO_TEMPLATE.format(
+                    userinfo["contactAddresses"][0]["streetName"],
+                    userinfo["contactAddresses"][0]["buildingNumber"],
+                    userinfo["contactAddresses"][0]["postcode"],
+                    userinfo["contactAddresses"][0]["cityName"],
+                    userinfo["firstConsumerPartyName"],
+                    f""" og {userinfo.get("secondConsumerPartyName")}"""
+                    if userinfo.get("secondConsumerPartyName") is not None
+                    else "",
+                ),
+                icon="ℹ",
+            )
 
         csv = df_to_csv(c_df)
-
         st.download_button(
             "👇 Download dine data som .csv-fil",
             csv,
