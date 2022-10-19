@@ -248,7 +248,7 @@ def main():
                         date_to=date_to,
                         dk_west=dk_area == "Vest for storebælt",
                     )
-                    userinfo = get_userinfo_cached(refresh_token=token)
+                    userinfo = get_userinfo_cached(refresh_token=token_input)
 
                     st.session_state["power_df"] = power_df
                     st.session_state["userinfo"] = userinfo
