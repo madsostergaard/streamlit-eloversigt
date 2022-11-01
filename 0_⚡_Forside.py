@@ -342,11 +342,11 @@ def main():
             )
         else:
             st.info("Viser seneste måned")
-            x_range = [c_df.index[-1] - dt.timedelta(hours=24), c_df.index[-1]]
-            display_mask = c_df.index > (c_df.index[-1] - dt.timedelta(days=31))
-            ds = c_df[display_mask]
+            df = c_df[c_df.index.year == year]
+            x_range = [df.index[-1] - dt.timedelta(hours=24), df.index[-1]]
+            display_mask = df.index > (df.index[-1] - dt.timedelta(days=31))
             display_plotly_chart(
-                ds,
+                df[display_mask],
                 ys,
                 {"value": "kWh"},
                 kind="bar",
