@@ -1,3 +1,4 @@
+import datetime as dt
 from pathlib import Path
 from typing import Dict, List, Literal, Optional
 
@@ -51,12 +52,20 @@ def display_plotly_chart(
     labels: Optional[dict] = None,
     plot_kwargs: Dict = {},
     kind: Literal["bar", "line"] = "bar",
+    show_rangeslider: bool = False,
+    x_range: List = None,
 ) -> None:
     px_fun = getattr(px, kind)
     fig = px_fun(df, y=y, labels=labels, **plot_kwargs)
     fig.update_layout(
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
     )
+    if show_rangeslider:
+        fig.update_xaxes(rangeslider_visible=True)
+
+    if x_range is not None:
+        fig.update_layout(xaxis_range=x_range)
+
     st.plotly_chart(fig, use_container_width=True)
 
 
@@ -320,16 +329,31 @@ def main():
     with tab1:
         st.success(f"Årlig totale forbrug t.d.: {total_use['Elforbrug'][year]} kWh")
 
-        st.subheader("Månedligt elforbrug")
-        day_basis = st.checkbox("Data på dagsbasis")
-        if not day_basis:
+        st.subheader("Elforbrug")
+        resolution = st.selectbox("Tidsopløsning", ("Måned", "Dag", "Timer"))
+        if resolution == "Måned":
             df = get_monthly_sum(c_df)
             display_plotly_chart(
                 df[df.index.year == year], ys, {"value": "kWh"}, kind="bar"
             )
-        else:
+        elif resolution == "Dag":
             display_plotly_chart(
                 get_daily_use(c_df, year), ys, {"value": "kWh"}, kind="bar"
+            )
+        else:
+            x_range = [c_df.index[-1] - dt.timedelta(hours=24), c_df.index[-1]]
+            display_mask = c_df.index > c_df.index[-1] - dt.timedelta(days=31)
+            ds = c_df[display_mask]
+            ds2 = ds[ds.index.hour < 6]
+            st.dataframe(ds2.groupby(ds2.index.floor("d")).sum()[ys + ["Elforbrug"]])
+            st.bar_chart(ds2.groupby(ds2.index.floor("d")).sum(), y=["Ren el"])
+            display_plotly_chart(
+                ds[ds.index.hour < 6],
+                ys,
+                {"value": "kWh"},
+                kind="bar",
+                show_rangeslider=True,
+                x_range=x_range,
             )
 
         st.subheader("Gennemsnitligt dagligt elforbrug i kWh")
