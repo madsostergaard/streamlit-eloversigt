@@ -341,14 +341,12 @@ def main():
                 get_daily_use(c_df, year), ys, {"value": "kWh"}, kind="bar"
             )
         else:
+            st.info("Viser seneste måned")
             x_range = [c_df.index[-1] - dt.timedelta(hours=24), c_df.index[-1]]
-            display_mask = c_df.index > c_df.index[-1] - dt.timedelta(days=31)
+            display_mask = c_df.index > (c_df.index[-1] - dt.timedelta(days=31))
             ds = c_df[display_mask]
-            ds2 = ds[ds.index.hour < 6]
-            st.dataframe(ds2.groupby(ds2.index.floor("d")).sum()[ys + ["Elforbrug"]])
-            st.bar_chart(ds2.groupby(ds2.index.floor("d")).sum(), y=["Ren el"])
             display_plotly_chart(
-                ds[ds.index.hour < 6],
+                ds,
                 ys,
                 {"value": "kWh"},
                 kind="bar",
